@@ -41,9 +41,9 @@ end
 
 # 取得した詳細取得先URLから詳細情報をスクレイピング
 article_details = []
-#urldata.each do |urlPath|
-  url = 'https:' + urldata[0]
-#  url = 'https:' + urlPath
+urldata.each do |urlPath|
+#  url = 'https:' + urldata[0]
+  url = 'https:' + urlPath
   html = open(url) do |f|
     charset = f.charset # 文字種別を取得
     f.read # htmlを読み込んで変数htmlに渡す
@@ -81,7 +81,7 @@ article_details = []
 
 # ひとつの詳細情報を、全詳細情報の配列に保存する
   article_details.push(element)
-#end
+end
 
 
 # DBに接続して、スクレイピングしたデータをinsertする
@@ -104,17 +104,23 @@ for num in 0..article_details.count - 1
   sql = %{
     insert into article_details (article_title, article_text, address, longitude, latitude) values (?, ?, ?, ?, ?)
   }
-#  stmt = client.prepare(sql)
-#  res = stmt.execute(article_details[num][0], article_details[num][1], article_details[num][4], article_details[num][5], article_details[num][6])
+#  stmt1 = client.prepare(sql)
+#  res = stmt1.execute(article_details[num][0], article_details[num][1], article_details[num][4], article_details[num][5], article_details[num][6])
 
 # 記事IDを取得して、ディレクトリを作成し画像ファイルを保存する
+  id = ""
   getsql = %{
-    select article_id from article_details where article_title = "清水寺"
+    select article_id from article_details where article_title = "#{article_details[num][0]}"
   }
+#  stmt2 = client.prepare(getsql)
+#  result = stmt2.execute(article_details[num][0])
   result = client.query(getsql)
+  result.each_hash do |row|
+    id = row["article_id"]
+  end
 
   for num2 in 0..article_details[num][7].count - 1
-    dirName = "/var/www/TripApp/images/" + result.to_s + "/"
+    dirName = "/var/www/TripApp/images/" + id + "/"
     fileTitle = num2 + 1
     fileName = fileTitle.to_s + ".jpg"
     filePath = dirName + fileName
