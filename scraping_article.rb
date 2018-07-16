@@ -93,8 +93,8 @@ for i in 0..article_list.count - 1
   sql = %{
     insert into article_list (article_title, category, area,status_flg) values (?, "test", ?, 1)
   }
-#  stmt = client.prepare(sql)
-#  res = stmt.execute(article_list[i][0], article_list[i][1])
+  stmt = client.prepare(sql)
+  res = stmt.execute(article_list[i][0], article_list[i][1])
 end
 
 # 記事詳細
@@ -104,21 +104,21 @@ for num in 0..article_details.count - 1
   sql = %{
     insert into article_details (article_title, article_text, address, longitude, latitude) values (?, ?, ?, ?, ?)
   }
-#  stmt1 = client.prepare(sql)
-#  res = stmt1.execute(article_details[num][0], article_details[num][1], article_details[num][4], article_details[num][5], article_details[num][6])
+  stmt = client.prepare(sql)
+  res = stmt.execute(article_details[num][0], article_details[num][1], article_details[num][4], article_details[num][5], article_details[num][6])
 
 # 記事IDを取得して、ディレクトリを作成し画像ファイルを保存する
+# 記事タイトルから記事IDを取得する
   id = ""
   getsql = %{
     select article_id from article_details where article_title = "#{article_details[num][0]}"
   }
-#  stmt2 = client.prepare(getsql)
-#  result = stmt2.execute(article_details[num][0])
   result = client.query(getsql)
   result.each_hash do |row|
     id = row["article_id"]
   end
 
+# 記事IDのディレクトリを作成し、画像ファイルを流し込む
   for num2 in 0..article_details[num][7].count - 1
     dirName = "/var/www/TripApp/images/" + id + "/"
     fileTitle = num2 + 1
