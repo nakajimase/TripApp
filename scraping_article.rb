@@ -120,7 +120,7 @@ for num in 0..article_details.count - 1
 
 # 記事IDのディレクトリを作成し、画像ファイルを流し込む
   for num2 in 0..article_details[num][7].count - 1
-    dirName = "/var/www/TripApp/images/" + id + "/"
+    dirName = "/var/www/TripApp/public/images/" + id + "/"
     fileTitle = num2 + 1
     fileName = fileTitle.to_s + ".jpg"
     filePath = dirName + fileName
